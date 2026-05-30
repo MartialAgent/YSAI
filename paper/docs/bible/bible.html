@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>AgentDAG Bible</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #0d1117;
+  --surface: #161b22;
+  --border: #30363d;
+  --text: #e6edf3;
+  --muted: #8b949e;
+  --blue: #58a6ff;
+  --green: #3fb950;
+  --purple: #d2a8ff;
+  --orange: #ffa657;
+  --red: #f85149;
+}
+
+html, body {
+  width: 100%; height: 100%;
+  background: var(--bg);
+  font-family: -apple-system, 'Segoe UI', sans-serif;
+  color: var(--text);
+  overflow: hidden;
+}
+
+/* ── SLIDE CONTAINER ── */
+.slide {
+  display: none;
+  width: 100vw; height: 100vh;
+  padding: 48px 68px;
+  flex-direction: column;
+}
+.slide.active { display: flex; }
+
+/* ── TITLE SLIDE ── */
+.slide-title {
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background: radial-gradient(ellipse at 55% 40%, #1a2d45 0%, var(--bg) 65%);
+}
+.slide-title .kicker {
+  font-size: 12px; font-weight: 600;
+  letter-spacing: 3px; text-transform: uppercase;
+  color: var(--blue); margin-bottom: 18px;
+}
+.slide-title h1 { font-size: 48px; font-weight: 700; line-height: 1.15; }
+.slide-title .sub { margin-top: 14px; font-size: 18px; color: var(--muted); font-weight: 300; }
+.slide-title .date { margin-top: 32px; font-size: 13px; color: var(--muted); }
+
+/* ── SECTION DIVIDER ── */
+.slide-div {
+  justify-content: flex-end;
+  background: var(--surface);
+  border-left: 4px solid var(--blue);
+}
+.slide-div .big-num {
+  position: absolute; top: 36px; right: 68px;
+  font-size: 110px; font-weight: 800;
+  color: var(--border); line-height: 1;
+  pointer-events: none; user-select: none;
+}
+.slide-div .part-tag {
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 3px; text-transform: uppercase;
+  color: var(--blue); margin-bottom: 10px;
+}
+.slide-div h2 { font-size: 38px; font-weight: 700; max-width: 600px; }
+.slide-div .desc { margin-top: 14px; font-size: 15px; color: var(--muted); }
+
+/* ── CONTENT SLIDE ── */
+.slide-head { margin-bottom: 22px; flex-shrink: 0; }
+.slide-head .tag {
+  display: inline-block;
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 2px; text-transform: uppercase;
+  color: var(--blue); margin-bottom: 6px;
+}
+.slide-head h2 { font-size: 24px; font-weight: 700; }
+.body { flex: 1; display: flex; flex-direction: column; gap: 14px; overflow: hidden; }
+
+/* ── LAYOUT ── */
+.cols { display: grid; gap: 16px; }
+.c2 { grid-template-columns: 1fr 1fr; }
+.c3 { grid-template-columns: 1fr 1fr 1fr; }
+
+/* ── CARD ── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px; padding: 16px 18px;
+}
+.card h3 {
+  font-size: 11px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 1px;
+  color: var(--blue); margin-bottom: 10px;
+}
+.card p, .card li { font-size: 13.5px; line-height: 1.6; color: var(--text); }
+.card ul { padding-left: 16px; }
+.card li { margin-bottom: 3px; }
+
+/* ── TABLE ── */
+.tbl-wrap {
+  border: 1px solid var(--border);
+  border-radius: 8px; overflow: auto;
+}
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th {
+  background: var(--surface); color: var(--muted);
+  font-weight: 600; font-size: 11px;
+  text-transform: uppercase; letter-spacing: 0.5px;
+  padding: 9px 13px; border-bottom: 1px solid var(--border);
+  text-align: left; white-space: nowrap;
+}
+td {
+  padding: 8px 13px;
+  border-bottom: 1px solid #21262d;
+  color: var(--text); vertical-align: middle;
+}
+tr:last-child td { border-bottom: none; }
+
+/* ── CODE ── */
+pre {
+  background: #010409;
+  border: 1px solid var(--border);
+  border-radius: 6px; padding: 14px 16px;
+  font-family: 'Consolas', 'JetBrains Mono', monospace;
+  font-size: 12px; color: #adbac7; line-height: 1.7;
+  overflow: auto;
+}
+
+/* ── BADGES ── */
+.b { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; }
+.b-blue   { background: rgba(88,166,255,.15); color: var(--blue); }
+.b-green  { background: rgba(63,185,80,.15);  color: var(--green); }
+.b-purple { background: rgba(210,168,255,.15);color: var(--purple); }
+.b-orange { background: rgba(255,166,87,.15); color: var(--orange); }
+.b-red    { background: rgba(248,81,73,.15);  color: var(--red); }
+
+/* ── HIGHLIGHT ── */
+.hl {
+  background: rgba(88,166,255,.08);
+  border-left: 3px solid var(--blue);
+  border-radius: 0 6px 6px 0;
+  padding: 11px 15px; font-size: 13.5px; line-height: 1.6;
+  flex-shrink: 0;
+}
+.hl-green  { border-color: var(--green);  background: rgba(63,185,80,.08); }
+.hl-orange { border-color: var(--orange); background: rgba(255,166,87,.08); }
+
+/* ── STARS ── */
+.stars { color: var(--orange); font-size: 12px; }
+
+/* ── CHECKLIST ── */
+.chk { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+.chk li { display: flex; gap: 10px; align-items: baseline; font-size: 13.5px; }
+.chk .done  { color: var(--green);  font-size: 11px; font-weight: 700; flex-shrink: 0; }
+.chk .wip   { color: var(--red);    font-size: 11px; font-weight: 700; flex-shrink: 0; }
+.chk .plan  { color: var(--muted);  font-size: 11px; font-weight: 700; flex-shrink: 0; }
+.chk .meet  { color: var(--orange); font-size: 11px; font-weight: 700; flex-shrink: 0; }
+
+/* ── NAV ── */
+#nav {
+  position: fixed; bottom: 24px; right: 32px;
+  display: flex; align-items: center; gap: 10px; z-index: 99;
+}
+#nav button {
+  width: 34px; height: 34px; border-radius: 50%;
+  background: var(--surface); border: 1px solid var(--border);
+  color: var(--text); font-size: 15px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+}
+#nav button:hover { background: var(--border); }
+#ctr { font-size: 12px; color: var(--muted); min-width: 48px; text-align: center; }
+
+/* ── PROGRESS ── */
+#bar {
+  position: fixed; top: 0; left: 0; height: 2px;
+  background: var(--blue); z-index: 100;
+  transition: width .2s;
+}
+
+/* ── SECTION LABEL ── */
+#lbl {
+  position: fixed; top: 18px; left: 26px;
+  font-size: 10px; color: var(--muted);
+  text-transform: uppercase; letter-spacing: 1px; z-index: 100;
+}
+
+@media print {
+  .slide { display: flex !important; page-break-after: always; height: 100vh; }
+  #nav, #bar, #lbl { display: none; }
+}
+</style>
+</head>
+<body>
+
+<div id="bar"></div>
+<div id="lbl"></div>
+
+<!-- ①  TITLE -->
+<div class="slide slide-title active" data-lbl="">
+  <div class="kicker">AgentDAG Research Bible</div>
+  <h1>AgentDAG Bible</h1>
+  <div class="sub">DAG 기반 멀티에이전트 오류 전파 억제 연구</div>
+  <div class="date">2026-05-16 &nbsp;·&nbsp; 팀 회의 자료</div>
+</div>
+
+<!-- ②  DIVIDER 1부 -->
+<div class="slide slide-div" data-lbl="1부">
+  <div class="big-num">01</div>
+  <div class="part-tag">Part 1</div>
+  <h2>결론 요약</h2>
+  <div class="desc">연구 질문 · 핵심 기여점</div>
+</div>
+
+<!-- ③  연구 질문 & 기여점 -->
+<div class="slide" data-lbl="1부 · 결론 요약">
+  <div class="slide-head">
+    <div class="tag">1부 · 결론 요약</div>
+    <h2>연구 질문 & 기여점</h2>
+  </div>
+  <div class="body">
+    <div class="hl">
+      DAG 중간 노드에 평가 게이트를 달면 <strong>오류 전파율이 얼마나 줄어드는가?</strong><br>
+      Partial Backpropagation이 게이트 단독 대비 <strong>추가로 얼마나 줄이는가?</strong>
+    </div>
+    <div class="cols c2">
+      <div class="card">
+        <h3>기존 연구</h3>
+        <ul>
+          <li>어떻게 DAG를 실행하는가</li>
+          <li>오류를 어떻게 탐지하는가</li>
+          <li>최종 출력 기준 평가</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>우리가 추가하는 것</h3>
+        <ul>
+          <li>게이트 + Partial Backprop의 <strong>억제 효과</strong></li>
+          <li>Fault Injection 실험으로 <strong>정량화</strong></li>
+          <li>정형/비정형 태스크 타입별 분석</li>
+        </ul>
+      </div>
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>#</th><th>기여</th><th>근거</th></tr></thead>
+        <tbody>
+          <tr><td><span class="b b-blue">C1</span></td><td>DAG 중간 게이트가 오류전파율을 정량적으로 줄임을 실증</td><td>Exp09: Vanilla vs Option1</td></tr>
+          <tr><td><span class="b b-green">C2</span></td><td>Partial Backpropagation이 게이트 단독 대비 추가 억제 효과 검증</td><td>Exp09: Option1 vs Option2</td></tr>
+          <tr><td><span class="b b-purple">C3</span></td><td>정형/비정형 태스크 타입에 따라 오류 전파 패턴이 다름을 발견</td><td>분리 집계 분석</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ④  DIVIDER 2부 -->
+<div class="slide slide-div" data-lbl="2부">
+  <div class="big-num">02</div>
+  <div class="part-tag">Part 2</div>
+  <h2>DAG 기술 개요</h2>
+  <div class="desc">DAG 기술 기초 · 시스템 아키텍처 · 실험 그래프</div>
+</div>
+
+<!-- ⑤  DAG 기술 기초 -->
+<div class="slide" data-lbl="2부 · DAG 기술 개요">
+  <div class="slide-head">
+    <div class="tag">2부 · DAG 기술 개요</div>
+    <h2>DAG 기술 기초</h2>
+  </div>
+  <div class="body">
+    <div class="cols c2">
+      <div>
+        <div class="card" style="margin-bottom:12px;">
+          <h3>DAG란</h3>
+          <p>Directed Acyclic Graph — 노드(작업 단위) + 방향 엣지(데이터 의존성) + 비순환 보장.<br>실행 순서는 위상 정렬(Topological Sort)로 결정론적으로 결정.</p>
+        </div>
+        <pre>Linear:    A → B → C
+Parallel:  A → B, A → C      (B·C 동시)
+Fan-in:    B → D, C → D      (D는 B·C 완료 후)
+Diamond:   A→B→D, A→C→D     (Fan-out+Fan-in)</pre>
+      </div>
+      <div class="tbl-wrap" style="align-self:start;">
+        <table>
+          <thead><tr><th>7대 표준</th><th>정의</th></tr></thead>
+          <tbody>
+            <tr><td>위상 정렬</td><td>선행 노드 항상 먼저 실행</td></tr>
+            <tr><td>Critical Path</td><td>전체 실행 시간 결정 최장 경로</td></tr>
+            <tr><td>Dataflow 모델</td><td>데이터 가용성이 실행 트리거</td></tr>
+            <tr><td>멱등성</td><td>동일 입력 → 동일 출력 (재시도 안전)</td></tr>
+            <tr><td>체크포인팅</td><td>노드 완료 시 상태 영속 저장</td></tr>
+            <tr><td>Fan-out/Fan-in</td><td>분배 → 합산 패턴</td></tr>
+            <tr><td>비순환 보장</td><td>정의 시점 DFS로 사이클 차단</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>구성 요소</th><th>역할</th></tr></thead>
+        <tbody>
+          <tr><td><span class="b b-blue">Orchestrator</span></td><td>위상 정렬 → 실행 순서 결정, 노드 상태 추적, 재시도·HITL 라우팅</td></tr>
+          <tr><td><span class="b b-green">Worker</span></td><td>개별 노드 작업 수행 (LLM 호출)</td></tr>
+          <tr><td><span class="b b-purple">State Store</span></td><td>노드별 입출력·상태 영속 저장</td></tr>
+          <tr><td><span class="b b-orange">Evaluator</span></td><td>노드 출력 품질 판정 → PASS / FAIL / AMBIGUOUS</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ⑥  시스템 아키텍처 -->
+<div class="slide" data-lbl="2부 · DAG 기술 개요">
+  <div class="slide-head">
+    <div class="tag">2부 · DAG 기술 개요</div>
+    <h2>시스템 아키텍처</h2>
+  </div>
+  <div class="body">
+    <div class="cols c2">
+      <div>
+        <p style="font-size:12px;color:var(--muted);margin-bottom:8px;">코드 구조</p>
+        <pre>paper/src/
+├── config.py       — 하이퍼파라미터
+├── models.py       — NodeState, GraphState
+├── graphs.py       — 7-node SaaS Pricing
+├── evaluator.py    — PASS/FAIL/AMBIGUOUS
+├── orchestrator.py — DAG 실행, 위상 정렬,
+│                     Partial Backprop
+└── evaluators/     — Exp03~08 변형</pre>
+        <div style="margin-top:12px;" class="tbl-wrap">
+          <table>
+            <thead><tr><th>역할</th><th>모델</th><th>이유</th></tr></thead>
+            <tbody>
+              <tr><td>Worker</td><td>gpt-4o-mini</td><td>비용 효율</td></tr>
+              <tr><td>Evaluator</td><td>gpt-4o</td><td>정확도 우선</td></tr>
+              <tr><td>Embedding</td><td>text-embedding-3-small</td><td>경량</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div>
+        <p style="font-size:12px;color:var(--muted);margin-bottom:8px;">실행 흐름 (Exp09)</p>
+        <pre>Fault Injection
+   (A_Pricing에 오류 삽입)
+        ↓
+Orchestrator
+   위상 정렬 → 실행 순서 결정
+        ↓
+Worker — LLM 호출
+        ↓
+[Vanilla]  평가 없음 → 그대로 전달
+[Option1]  Evaluator → FAIL 시 재시도
+[Option2]  Evaluator → FAIL 시 재시도
+           수정 발생 시 Impact Factor 계산
+           → Partial Backprop 재실행
+        ↓
+오류전파율 측정</pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ⑦  실험 그래프 -->
+<div class="slide" data-lbl="2부 · DAG 기술 개요">
+  <div class="slide-head">
+    <div class="tag">2부 · DAG 기술 개요</div>
+    <h2>실험 그래프 — 7-node SaaS Pricing</h2>
+  </div>
+  <div class="body">
+    <div class="cols c2" style="align-items:start;">
+      <pre style="font-size:14px;line-height:2.2;">A_Pricing ──→ B_ROI ──→ C_AdCopy
+    │               │
+    │          G_MarketSize
+    │
+    └──→ D_ConditionAudit ──→ E_ChurnFormula
+                    │
+                    └──→ F_BoardReport</pre>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>노드</th><th>타입</th><th>역할</th></tr></thead>
+          <tbody>
+            <tr><td><strong>A_Pricing</strong></td><td><span class="b b-blue">정형</span></td><td>3-tier 구독 가격 설계 (Pro=2.5×Basic)</td></tr>
+            <tr><td><strong>B_ROI</strong></td><td><span class="b b-blue">정형</span></td><td>A 가격 기반 연간 ROI 계산</td></tr>
+            <tr><td><strong>C_AdCopy</strong></td><td><span class="b b-purple">비정형</span></td><td>B의 ROI% 인용 광고 문구 작성</td></tr>
+            <tr><td><strong>D_ConditionAudit</strong></td><td><span class="b b-purple">비정형</span></td><td>계약 조건 검토</td></tr>
+            <tr><td><strong>E_ChurnFormula</strong></td><td><span class="b b-blue">정형</span></td><td>이탈률 공식 계산</td></tr>
+            <tr><td><strong>F_BoardReport</strong></td><td><span class="b b-purple">비정형</span></td><td>경영진 보고서</td></tr>
+            <tr><td><strong>G_MarketSize</strong></td><td><span class="b b-purple">비정형</span></td><td>시장 규모 분석</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ⑧  DIVIDER 3부 -->
+<div class="slide slide-div" data-lbl="3부">
+  <div class="big-num">03</div>
+  <div class="part-tag">Part 3</div>
+  <h2>DAG 최신 기술 정보</h2>
+  <div class="desc">연구 지형도 · Gap Map · EPR 선행 연구 · 2026 생태계</div>
+</div>
+
+<!-- ⑨  연구 지형도 -->
+<div class="slide" data-lbl="3부 · DAG 최신 기술 정보">
+  <div class="slide-head">
+    <div class="tag">3부 · DAG 최신 기술 정보</div>
+    <h2>연구 지형도</h2>
+  </div>
+  <div class="body">
+    <div class="cols c2">
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>분야</th><th>키워드</th><th>연결점</th></tr></thead>
+          <tbody>
+            <tr><td>구조</td><td>DAG Multi-Agent Orchestration</td><td>핵심 실험 환경</td></tr>
+            <tr><td>평가</td><td>Error Propagation Measurement</td><td>핵심 측정 지표</td></tr>
+            <tr><td>신뢰성</td><td>Fault Injection &amp; Reliability</td><td>실험 방법론</td></tr>
+            <tr><td>개입</td><td>Human-in-the-Loop (HITL)</td><td>AMBIGUOUS + Impact Factor</td></tr>
+            <tr><td>시각화</td><td>Agent Observability &amp; Tracing</td><td>논문 Figure</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>순위</th><th>분야</th><th>점수</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>Multi-Agent Orchestration / DAG</td><td><strong style="color:var(--blue)">9.1</strong></td></tr>
+            <tr><td>2</td><td>Error Propagation Measurement</td><td><strong style="color:var(--blue)">8.7</strong></td></tr>
+            <tr><td>3</td><td>LLM-as-Judge / Agent Evaluation</td><td>8.4</td></tr>
+            <tr><td>4</td><td>Error Recovery &amp; Resilience</td><td>7.8</td></tr>
+            <tr><td>5</td><td>Human-in-the-Loop (HITL)</td><td>7.5</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <p style="font-size:11px;color:var(--muted);">* 점수 기준: 논문 기여 가능성(4) + 차별화 여지(3) + 현재 관심도(3)</p>
+  </div>
+</div>
+
+<!-- ⑩  최신 연구 & 한계 -->
+<div class="slide" data-lbl="3부 · DAG 최신 기술 정보">
+  <div class="slide-head">
+    <div class="tag">3부 · DAG 최신 기술 정보</div>
+    <h2>분야별 최신 연구 &amp; 한계</h2>
+  </div>
+  <div class="body">
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>분야</th><th>논문</th><th>연도</th><th>핵심</th></tr></thead>
+        <tbody>
+          <tr><td rowspan="3"><span class="b b-blue">DAG</span></td>
+              <td>DynTaskMAS (2503.07675)</td><td>ICAPS 2025</td><td>DAG 자동 생성 + 비동기 병렬, 실행 21~33% 단축</td></tr>
+          <tr><td>Scheduler-Theoretic (2604.11378)</td><td>2026</td><td>형식적 스케줄링 이론 (실증 없음)</td></tr>
+          <tr><td>Why Do MAS Fail? / MAST (2503.13657)</td><td>2025</td><td>14개 실패 유형, 1,600+ 트레이스</td></tr>
+          <tr><td rowspan="3"><span class="b b-orange">EPR</span></td>
+              <td>AgentEval (2604.23581)</td><td>2026</td><td>루트코즈 vs 전파 실패 구분. 전체 실패의 <strong>63%가 upstream 전파</strong></td></tr>
+          <tr><td>AgentProp-Bench (2604.16706)</td><td>2026</td><td>S1→S2→S3 단계별 전파율. 기준값 <strong>≈0.62</strong></td></tr>
+          <tr><td>MAS-FIRE (2602.19843)</td><td>2026</td><td>15개 결함 유형 × 3가지 비침습 주입 방식</td></tr>
+          <tr><td><span class="b b-green">HITL</span></td>
+              <td>HULA (2411.12924)</td><td>ICSE 2025</td><td>개발자 HITL 프레임워크, 플랜 승인률 82%</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="hl" style="font-size:13px;">
+      <strong>핵심 한계:</strong> 중간 노드 품질 검증 없음 / 최종 출력만 검증 / 오류 전파 범위의 형식적 보장 없음
+    </div>
+  </div>
+</div>
+
+<!-- ⑪  Gap Map -->
+<div class="slide" data-lbl="3부 · DAG 최신 기술 정보">
+  <div class="slide-head">
+    <div class="tag">3부 · DAG 최신 기술 정보</div>
+    <h2>연구 공백 지도 (Gap Map)</h2>
+  </div>
+  <div class="body">
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>현재 연구 집중 영역</th><th>공백 — 우리가 파고들 곳</th></tr></thead>
+        <tbody>
+          <tr><td>DAG 실행 스케줄링</td><td>게이트 유무·백프롭 유무가 오류전파율에 미치는 단계적 효과</td></tr>
+          <tr><td>오류 전파 측정 (단일 파이프라인)</td><td>DAG 중간 게이트가 전파율을 구조적으로 줄이는지 실증</td></tr>
+          <tr><td>단일 실행 트레이싱</td><td>정형/비정형 태스크 타입에 따른 전파 패턴 차이</td></tr>
+          <tr><td>HITL 개입 메커니즘</td><td>게이트 + 백프롭 조합의 비용 대비 전파 억제 효율</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="cols c2">
+      <div class="card">
+        <h3>기존 연구가 다루는 것</h3>
+        <ul>
+          <li>"어떻게 DAG를 실행하는가"</li>
+          <li>"오류를 어떻게 탐지하는가"</li>
+        </ul>
+      </div>
+      <div class="card" style="border-color:var(--blue)">
+        <h3 style="color:var(--green)">우리가 추가하는 것</h3>
+        <ul>
+          <li>DAG 중간 게이트가 오류 전파를 얼마나 줄이는가</li>
+          <li>Partial Backprop의 추가 억제 효과 정량화</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ⑫  EPR 분석 1 -->
+<div class="slide" data-lbl="3부 · DAG 최신 기술 정보">
+  <div class="slide-head">
+    <div class="tag">3부 · DAG 최신 기술 정보</div>
+    <h2>EPR 선행 연구 — AgentEval &amp; AgentProp-Bench</h2>
+  </div>
+  <div class="body">
+    <div class="cols c2">
+      <div class="card">
+        <h3>AgentEval (arXiv:2604.23581)</h3>
+        <p style="margin-bottom:8px;">에이전트 실행을 평가 DAG로 형식화, 노드별 LLM Judge 부착</p>
+        <ul style="margin-bottom:10px;">
+          <li>루트코즈 실패 <strong>36.8%</strong> / 전파 실패 <strong>63.2%</strong></li>
+          <li>평균 전파 체인 길이: <strong>2.1 노드</strong></li>
+          <li>FDRec 0.89 vs 0.41 (E2E 대비 2.17×)</li>
+          <li>인간 전문가 합의 κ = 0.84</li>
+        </ul>
+        <div class="hl hl-green" style="font-size:12px;">→ 루트코즈 vs 전파 실패 구분으로 게이트 효과 직접 측정 가능</div>
+      </div>
+      <div class="card">
+        <h3>AgentProp-Bench (arXiv:2604.16706)</h3>
+        <p style="margin-bottom:8px;">파라미터 수준 fault injection 후 3단계 지표로 전파율 분해</p>
+        <pre style="font-size:11px;margin-bottom:10px;">S1 = 주입 적용됨
+S2 = 하위 실행에 observable 변화
+S3 = 최종 출력 오류
+
+EPR = P[S3|S1] ≈ 0.62
+      (범위: 0.46 ~ 0.73)</pre>
+        <ul style="margin-bottom:10px;font-size:13px;">
+          <li>거절률·회복률은 독립 능력 (ρ=0.126)</li>
+          <li>전파율 모델별 편차 큼 (0.43 ~ 0.97)</li>
+        </ul>
+        <div class="hl hl-green" style="font-size:12px;">→ S1→S3 추적으로 게이트 개입 단계 정량화</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ⑬  EPR 분석 2 -->
+<div class="slide" data-lbl="3부 · DAG 최신 기술 정보">
+  <div class="slide-head">
+    <div class="tag">3부 · DAG 최신 기술 정보</div>
+    <h2>EPR 선행 연구 — MAS-FIRE &amp; Sherlock</h2>
+  </div>
+  <div class="body">
+    <div class="cols c2">
+      <div class="card">
+        <h3>MAS-FIRE (arXiv:2602.19843)</h3>
+        <p style="margin-bottom:8px;">15개 결함 유형 × 3가지 비침습 주입 방식으로 MAS 강건성 평가</p>
+        <pre style="font-size:11px;margin-bottom:10px;">Of = 결함 인식 후 방어 행동 유발 비율
+Lf = 지역 복구 성공률
+Sf = 지역 복구 → 전역 성공 비율
+Lf - Sf 갭 = 잔류 전파 효과</pre>
+        <ul style="font-size:13px;margin-bottom:10px;">
+          <li>반복 폐루프: 선형 대비 결함 <strong>40%+ 무력화</strong></li>
+          <li>아키텍처 토폴로지 ≥ 모델 크기</li>
+        </ul>
+        <div class="hl hl-green" style="font-size:12px;">→ Option2 백프롭의 Lf/Sf 차이로 보완 측정</div>
+      </div>
+      <div class="card">
+        <h3>Sherlock (arXiv:2511.00330)</h3>
+        <p style="margin-bottom:8px;">반사실적 분석으로 취약 노드 식별 → 선택적 검증기 부착</p>
+        <pre style="font-size:11px;margin-bottom:10px;">노드 취약성 순서:
+말단 노드 > 초기 노드 > 중간 노드
+
+말단: 복구 경로 없음
+초기: 오류가 전체 파급
+중간: 하위 노드가 보정 가능</pre>
+        <ul style="font-size:13px;margin-bottom:10px;">
+          <li>Fan-in ↑ → 오류 증폭 가능성 ↑</li>
+          <li>정확도 <strong>+18.3%</strong> / 실행시간 <strong>-48.7%</strong></li>
+        </ul>
+        <div class="hl hl-green" style="font-size:12px;">→ A_Pricing(초기 노드) 주입 위치 이론적 뒷받침</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ⑭  선행 연구 종합 -->
+<div class="slide" data-lbl="3부 · DAG 최신 기술 정보">
+  <div class="slide-head">
+    <div class="tag">3부 · DAG 최신 기술 정보</div>
+    <h2>선행 연구 종합 — 실험 설계 원칙</h2>
+  </div>
+  <div class="body">
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>설계 결정</th><th>근거 논문</th><th>구체 수치</th></tr></thead>
+        <tbody>
+          <tr><td>루트 노드(A_Pricing)에 주입</td><td>Sherlock — 초기 노드 = 전체 파급</td><td>15K+ 트레이스 실증</td></tr>
+          <tr><td>루트코즈 vs 전파 실패 구분</td><td>AgentEval</td><td>실패의 <strong>63%</strong>가 전파 실패</td></tr>
+          <tr><td>단계별 전파율(S1→S3) 측정</td><td>AgentProp-Bench</td><td>기준값 <strong>≈ 0.62</strong></td></tr>
+          <tr><td>정형/비정형 분리 집계</td><td>MAS-FIRE</td><td>아키텍처별 편차 <strong>40%+</strong></td></tr>
+          <tr><td>Fan-in 노드 중점 관찰</td><td>Sherlock</td><td>Fan-in ↑ → 오류 증폭</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="cols c3">
+      <div class="hl" style="font-size:13px;"><strong>주입 위치</strong><br>A_Pricing (초기 노드)</div>
+      <div class="hl" style="font-size:13px;"><strong>EPR 기준값</strong><br>Vanilla ≈ 0.62 예상</div>
+      <div class="hl" style="font-size:13px;"><strong>중점 관찰 노드</strong><br>D_ConditionAudit, F_BoardReport (Fan-in)</div>
+    </div>
+  </div>
+</div>
+
+<!-- ⑮  2026 생태계 -->
+<div class="slide" data-lbl="3부 · DAG 최신 기술 정보">
+  <div class="slide-head">
+    <div class="tag">3부 · DAG 최신 기술 정보</div>
+    <h2>2026 AI Agent 생태계</h2>
+  </div>
+  <div class="body">
+    <div class="tbl-wrap" style="margin-bottom:0;">
+      <table>
+        <thead><tr><th>프로토콜</th><th>방향</th><th>2026 상태</th></tr></thead>
+        <tbody>
+          <tr><td><span class="b b-blue">MCP</span></td><td>Agent → Tools/Data</td><td>월 9,700만 SDK 다운로드, 서버 18,000+</td></tr>
+          <tr><td><span class="b b-green">A2A</span></td><td>Agent ↔ Agent</td><td>v1.0 GA, 150+ 조직 지원</td></tr>
+          <tr><td><span class="b b-purple">LangGraph</span></td><td>프레임워크 오케스트레이션</td><td>프로덕션 표준 (Supervisor 패턴)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>항목</th><th>현재 상태</th><th>갭</th></tr></thead>
+        <tbody>
+          <tr><td>LangGraph</td><td>사용 중</td><td><code>interrupt()</code> / <code>Command(resume=...)</code> 미적용</td></tr>
+          <tr><td>체크포인터</td><td>자체 구현</td><td>AsyncPostgresSaver 교체 고려</td></tr>
+          <tr><td>MCP</td><td>미적용</td><td>Evaluator를 MCP 서버로 노출 → 외부 재사용 가능</td></tr>
+          <tr><td>HITL</td><td>자체 구현</td><td>LangGraph interrupt() 패턴으로 표준화 가능</td></tr>
+          <tr><td>A2A</td><td>미적용</td><td>단일 배포 → 현재 불필요</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ⑯  DIVIDER 4부 -->
+<div class="slide slide-div" data-lbl="4부">
+  <div class="big-num">04</div>
+  <div class="part-tag">Part 4</div>
+  <h2>실험 옵션</h2>
+  <div class="desc">오늘 회의에서 결정할 4가지 항목</div>
+</div>
+
+<!-- ⑰  실험형식 -->
+<div class="slide" data-lbl="4부 · 실험 옵션">
+  <div class="slide-head">
+    <div class="tag">4부 · 실험 옵션</div>
+    <h2>실험 형식 — Vanilla vs Option1 vs Option2</h2>
+  </div>
+  <div class="body">
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th></th><th>Option A</th><th>Option B</th><th>Option C</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Vanilla</strong></td><td>게이트 X, 백프롭 X</td><td>게이트 X, 백프롭 X</td><td>게이트 X, 백프롭 X</td></tr>
+          <tr><td><strong>Option1</strong></td><td>게이트 O, 백프롭 X</td><td>단순 게이트 O, 백프롭 X</td><td>게이트 O, 백프롭 X</td></tr>
+          <tr><td><strong>Option2</strong></td><td>게이트 O, 백프롭 O</td><td>엄격 게이트 O, 백프롭 X</td><td>게이트 O, 적응형 재실행 O</td></tr>
+          <tr><td><strong>비교 축</strong></td><td>게이트 유무 × 백프롭 유무</td><td>게이트 엄격도</td><td>재실행 방식</td></tr>
+          <tr><td>논문 기여도</td><td><span class="stars">★★★★★</span></td><td><span class="stars">★★★☆☆</span></td><td><span class="stars">★★★★☆</span></td></tr>
+          <tr><td>실험 실현성</td><td><span class="stars">★★★★★</span></td><td><span class="stars">★★★☆☆</span></td><td><span class="stars">★★★★☆</span></td></tr>
+          <tr><td>결과 설득력</td><td><span class="stars">★★★★★</span></td><td><span class="stars">★★★☆☆</span></td><td><span class="stars">★★★★☆</span></td></tr>
+          <tr><td>코드 재활용</td><td><span class="stars">★★★★☆</span></td><td><span class="stars">★★★★★</span></td><td><span class="stars">★★★★★</span></td></tr>
+          <tr><td><strong>종합</strong></td><td><strong style="color:var(--green)">19/20</strong></td><td>13/20</td><td>17/20</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="hl hl-green" style="font-size:13px;">
+      <strong>권장: Option A</strong> — 게이트 유무·백프롭 유무를 단계적으로 분리해 기여점 C1·C2를 직접 증명.
+    </div>
+    <div class="hl hl-orange" style="font-size:14px;">→ 회의 결정: ___________</div>
+  </div>
+</div>
+
+<!-- ⑱  EPR 측정 방식 -->
+<div class="slide" data-lbl="4부 · 실험 옵션">
+  <div class="slide-head">
+    <div class="tag">4부 · 실험 옵션</div>
+    <h2>오류전파율 측정 방식</h2>
+  </div>
+  <div class="body">
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th></th><th>방식 A — 구조적</th><th>방식 B — 단계적</th><th>방식 C — 루트코즈</th><th>방식 D — 이중계층</th></tr></thead>
+        <tbody>
+          <tr><td>수식</td>
+              <td style="font-size:12px;">오류 하위 노드 수<br>/ 전체 하위 노드 수</td>
+              <td style="font-size:12px;">P[S3|S1] ≈ 0.62<br>S1→S2→S3 분해</td>
+              <td style="font-size:12px;">전파 실패 수<br>/ 전체 실패 수</td>
+              <td style="font-size:12px;">Of / Lf / Sf<br>이중 계층</td></tr>
+          <tr><td>출처</td><td>자체 설계</td><td>AgentProp-Bench</td><td>AgentEval</td><td>MAS-FIRE</td></tr>
+          <tr><td>논문 정합성</td><td><span class="stars">★★★☆☆</span></td><td><span class="stars">★★★★★</span></td><td><span class="stars">★★★★★</span></td><td><span class="stars">★★★★☆</span></td></tr>
+          <tr><td>구현 용이성</td><td><span class="stars">★★★★★</span></td><td><span class="stars">★★★☆☆</span></td><td><span class="stars">★★★☆☆</span></td><td><span class="stars">★★☆☆☆</span></td></tr>
+          <tr><td>DAG 구조 활용</td><td><span class="stars">★★★★☆</span></td><td><span class="stars">★★★☆☆</span></td><td><span class="stars">★★★★★</span></td><td><span class="stars">★★★☆☆</span></td></tr>
+          <tr><td>전파 경로 추적</td><td><span class="stars">★★☆☆☆</span></td><td><span class="stars">★★★★☆</span></td><td><span class="stars">★★★★★</span></td><td><span class="stars">★★★☆☆</span></td></tr>
+          <tr><td><strong>종합</strong></td><td>14/20</td><td>15/20</td><td><strong style="color:var(--green)">17/20</strong></td><td>11/20</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="hl hl-green" style="font-size:13px;">
+      <strong>권장: 방식 C</strong> — AgentEval 선행 연구와 직접 비교, DAG 의존성 최대 활용.<br>
+      <strong>차선: 방식 A + B 병행</strong> — 구현 단순 + 단계별 추적, 논문 Figure 두 가지 확보.
+    </div>
+    <div class="hl hl-orange" style="font-size:14px;">→ 회의 결정: ___________</div>
+  </div>
+</div>
+
+<!-- ⑲  평가항목 -->
+<div class="slide" data-lbl="4부 · 실험 옵션">
+  <div class="slide-head">
+    <div class="tag">4부 · 실험 옵션</div>
+    <h2>평가항목 — 정형 / 비정형</h2>
+  </div>
+  <div class="body">
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th></th><th>정형만</th><th>혼합 (분리 집계)</th></tr></thead>
+        <tbody>
+          <tr><td>대상 노드</td><td>A_Pricing, B_ROI, E_ChurnFormula</td><td>7-node 전체</td></tr>
+          <tr><td>오류 판정</td><td>수치 위반 (명확)</td><td>정형: 수치 위반 / 비정형: LLM Judge</td></tr>
+          <tr><td>논문 기여도</td><td><span class="stars">★★★☆☆</span></td><td><span class="stars">★★★★★</span></td></tr>
+          <tr><td>실험 실현성</td><td><span class="stars">★★★★★</span></td><td><span class="stars">★★★★☆</span></td></tr>
+          <tr><td>일반화 주장</td><td>약함</td><td>강함</td></tr>
+          <tr><td>추가 설계 부담</td><td>없음</td><td>비정형 판정 기준 1회 설계 필요</td></tr>
+          <tr><td><strong>종합</strong></td><td>13/20</td><td><strong style="color:var(--green)">18/20</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="hl hl-green" style="font-size:13px;">
+      <strong>권장: 혼합</strong> — 기여점 C3(정형/비정형 전파 패턴 차이) 추가 확보. SaaS 그래프 그대로 사용.
+    </div>
+    <div class="cols c2">
+      <div class="card">
+        <h3>기본 형태 (이미 확정)</h3>
+        <p>단방향 DAG — 7-node SaaS Pricing 그래프 유지.</p>
+      </div>
+      <div class="hl hl-orange" style="font-size:14px;align-self:center;">→ 회의 결정: ___________</div>
+    </div>
+  </div>
+</div>
+
+<!-- ⑳  다음 단계 -->
+<div class="slide" data-lbl="다음 단계">
+  <div class="slide-head">
+    <div class="tag">Phase 2</div>
+    <h2>다음 단계 체크리스트</h2>
+  </div>
+  <div class="body">
+    <div class="cols c2">
+      <div>
+        <p style="font-size:12px;color:var(--muted);margin-bottom:10px;">오늘 회의</p>
+        <ul class="chk">
+          <li><span class="meet">[ 회의 ]</span> 실험형식 확정 — Option A / B / C</li>
+          <li><span class="meet">[ 회의 ]</span> 오류전파율 측정 방식 확정 — A / B / C / D</li>
+          <li><span class="meet">[ 회의 ]</span> 평가항목 (정형/비정형) 확정</li>
+          <li><span class="done">[ 확정 ]</span> 기본 형태 — 단방향 DAG (7-node SaaS)</li>
+        </ul>
+      </div>
+      <div>
+        <p style="font-size:12px;color:var(--muted);margin-bottom:10px;">이후 구현</p>
+        <ul class="chk">
+          <li><span class="wip">[ 미완 ]</span> Fault injection 레이어 구현 (A_Pricing 오류 주입)</li>
+          <li><span class="wip">[ 미완 ]</span> 오류 판정 기준 코드화<br><small style="color:var(--muted);padding-left:62px;">정형: 수치 위반 / 비정형: LLM Judge</small></li>
+          <li><span class="wip">[ 미완 ]</span> Exp09 — Vanilla vs Option1 vs Option2</li>
+          <li><span class="wip">[ 미완 ]</span> 결과 시각화 — 오류전파율 비교 Figure</li>
+          <li><span class="plan">[ 예정 ]</span> Exp10 — 신재용 데이터셋 일반화 검증</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- NAV -->
+<div id="nav">
+  <button id="prev">&#8592;</button>
+  <span id="ctr">1 / 20</span>
+  <button id="next">&#8594;</button>
+</div>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const total  = slides.length;
+  let cur = 0;
+
+  function go(n) {
+    slides[cur].classList.remove('active');
+    cur = Math.max(0, Math.min(total - 1, n));
+    slides[cur].classList.add('active');
+    document.getElementById('ctr').textContent = (cur + 1) + ' / ' + total;
+    document.getElementById('bar').style.width = ((cur + 1) / total * 100) + '%';
+    document.getElementById('lbl').textContent = slides[cur].dataset.lbl || '';
+  }
+
+  document.getElementById('prev').addEventListener('click', function(){ go(cur - 1); });
+  document.getElementById('next').addEventListener('click', function(){ go(cur + 1); });
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') { e.preventDefault(); go(cur + 1); }
+    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')                    { e.preventDefault(); go(cur - 1); }
+    if (e.key === 'Home') go(0);
+    if (e.key === 'End')  go(total - 1);
+  });
+
+  var touchX = 0;
+  document.addEventListener('touchstart', function(e){ touchX = e.touches[0].clientX; });
+  document.addEventListener('touchend',   function(e){
+    var dx = e.changedTouches[0].clientX - touchX;
+    if (Math.abs(dx) > 50) go(dx < 0 ? cur + 1 : cur - 1);
+  });
+
+  go(0);
+</script>
+</body>
+</html>

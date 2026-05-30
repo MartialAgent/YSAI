@@ -1,0 +1,6 @@
+[submodule "Modern-AI-Agents"]
+	path = Modern-AI-Agents
+	url = https://github.com/PacktPublishing/Modern-AI-Agents.git
+[submodule "generative_agents"]
+	path = generative_agents
+	url = https://github.com/MartialAgent/generative_agents.git
