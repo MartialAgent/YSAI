@@ -4,7 +4,7 @@ Study session initialization skill.
 
 ### 1. 진도 상태 확인
 ```bash
-python -X utf8 basic/init_progress.py status
+python -X utf8 "basic study/init_progress.py" status
 ```
 출력에서 현재 모듈, 정답률, weak_topics 파악.
 
@@ -19,16 +19,16 @@ python -X utf8 basic/init_progress.py status
 
 ### 3. 세션 시작 기록
 ```bash
-python -X utf8 basic/init_progress.py start
+python -X utf8 "basic study/init_progress.py" start
 ```
 
 ### 4. 학습 진행
 CLAUDE.md의 세션 프로토콜(3~7단계)에 따라 진행:
-- 개념 설명: `basic/{module}.md` 해당 섹션 읽어서 대화체로 설명
+- 개념 설명: `basic study/{module}.md` 해당 섹션 읽어서 대화체로 설명
 - 에이전트 모듈이면 `SOTA/ai_agent_trends_2026_05.md` 함께 참조
 - 문제 출제 → 평가 → 진도 기록 반복
 
 ### 행동 규칙
 - 힌트는 요청 시에만
 - 오답 시 바로 정답 알려주지 않고 한 번 더 시도 유도
-- 매 문제 후 `basic/init_progress.py record` 호출
+- 매 문제 후 `"basic study/init_progress.py" record` 호출

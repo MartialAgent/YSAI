@@ -13,7 +13,7 @@ Get-Date -Format "yyyy-MM-dd HH:mm"
 
 ### 2. 현재 공부 주제 확인
 ```bash
-python -X utf8 basic/init_progress.py status
+python -X utf8 "basic study/init_progress.py" status
 ```
 - `current_module` 식별
 - 직전 대화 맥락에서 다루던 **구체적 토픽**을 함께 식별 (예: `python_syntax — 언패킹 문법`)
