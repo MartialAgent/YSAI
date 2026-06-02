@@ -4,6 +4,13 @@
   "weak_topics": [],
   "total_questions": 3,
   "correct": 2,
-  "last_session": "2026-05-11",
-  "sessions": []
+  "last_session": "2026-06-02",
+  "sessions": [
+    {
+      "date": "2026-06-02",
+      "module": "prob_stats",
+      "summary": "python_syntax 언패킹 문법 자유 학습 (*, ** / *args, **kwargs / 매개변수vs인자 / merge_dicts, combine_lists, to_dict 실습). 등록 모듈(확률통계) 외 추가 학습이라 record 미반영. 상세 학습 기록은 memo/2026-06-02.md 참조.",
+      "questions_this_session": 0
+    }
+  ]
 }

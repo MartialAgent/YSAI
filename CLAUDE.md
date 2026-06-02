@@ -167,12 +167,36 @@ numpy만 사용해서 100×50 랜덤 행렬의
 
 ---
 
+## 메모 스킬 (`/memo`)
+
+세션 도중 정리하고 싶은 개념·깨달음·헷갈렸던 부분이 있을 때 호출한다.
+실제 동작은 `.claude/commands/memo.md` 에 정의되어 있다.
+
+- `/memo` — 직전 대화의 핵심을 2~4줄로 자동 요약해 저장
+- `/memo {내용}` — 사용자가 직접 작성한 내용을 그대로 저장
+
+저장 위치: `memo/YYYY-MM-DD.md` (일자별 파일에 누적)
+항목 형식:
+```
+## [YYYY-MM-DD HH:mm] {module} — {topic}
+
+{메모 본문}
+```
+
+규칙:
+- 진도(`progress.json`)는 건드리지 않는다
+- 커밋/푸시는 하지 않는다 (`/finish` 에서 일괄 처리)
+- 메모 저장 후 진행 중이던 문제/대화로 그대로 복귀
+
+---
+
 ## 진도 파일 구조
 
 ```
 basic/progress.json    — 학습 진도 (자동 관리)
 basic/session_log.md   — 세션별 기록 (자동 추가)
 basic/init_progress.py — 진도 관리 CLI
+memo/YYYY-MM-DD.md     — 세션 중 메모 (/memo 로 일자별 누적)
 ```
 
 ---
