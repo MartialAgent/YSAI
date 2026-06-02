@@ -4,6 +4,8 @@ environment/frontend_server/storage/
 environment/frontend_server/compressed_storage/
 environment/frontend_server/temp_storage/
 environment/frontend_server/db.sqlite3
+environment/frontend_server/frontend_server/db.sqlite3
+*.sqlite3
 
 reverie/backend_server/utils.py
 frontend_server/settings/local.py
