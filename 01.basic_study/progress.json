@@ -2,14 +2,20 @@
   "module": "prob_stats",
   "completed_topics": [],
   "weak_topics": [],
-  "total_questions": 3,
-  "correct": 2,
-  "last_session": "2026-06-02",
+  "total_questions": 6,
+  "correct": 5,
+  "last_session": "2026-06-03",
   "sessions": [
     {
       "date": "2026-06-02",
       "module": "prob_stats",
       "summary": "python_syntax 언패킹 문법 자유 학습 (*, ** / *args, **kwargs / 매개변수vs인자 / merge_dicts, combine_lists, to_dict 실습). 등록 모듈(확률통계) 외 추가 학습이라 record 미반영. 상세 학습 기록은 memo/2026-06-02.md 참조.",
+      "questions_this_session": 0
+    },
+    {
+      "date": "2026-06-03",
+      "module": "prob_stats",
+      "summary": "python_syntax 자유학습 (모듈 외): 함수 일급객체 → 클로저(도시락통) → 데코레이터 정의 → @ 문법까지 사다리 4단 진행. 1~3단 정착 (multiply_by_3 클로저 정확히 풀어냄, 데코레이터 값 추적 정확). 4단(@ + relay + f-string + __name__ + 출력 시뮬레이션)에서 부하 폭주로 무너짐 — 부족한 것 진단 메모 완료. 정답률 83.3% (5/6). 다음 세션 진입 전 f-string 단독 학습 + 함수 속성 도입 필요. 상세는 00.memo/2026-06-03.md 참조.",
       "questions_this_session": 0
     }
   ]
