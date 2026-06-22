@@ -21,12 +21,12 @@
 
 | 파일명 | 도메인 | 핵심 내용 |
 |---|---|---|
-| `prob_stats.md` | 확률통계 | 확률분포, 기댓값, 베이즈 정리, MLE, 정보이론 |
-| `linear_algebra.md` | 선형대수 | 벡터·행렬 연산, 고유값, SVD, 차원축소 |
-| `python_syntax.md` | 파이썬 문법 | 자료구조, 함수형, OOP, NumPy/Pandas 패턴 |
-| `nlp.md` | NLP 개념과 코드 | 토크나이저, 임베딩, Attention, 전처리 파이프라인 |
-| `llm.md` | LLM 개념과 코드 | Transformer 구조, 파인튜닝, RAG, 프롬프트 엔지니어링 |
-| `agent.md` | 에이전트 개념과 코드 | ReAct, Tool Use, 메모리, 멀티에이전트 오케스트레이션 |
+| `01_prob_stats.md` | 확률통계 | 확률분포, 기댓값, 베이즈 정리, MLE, 정보이론 |
+| `02_linear_algebra.md` | 선형대수 | 벡터·행렬 연산, 고유값, SVD, 차원축소 |
+| `03_python_syntax.md` | 파이썬 문법 | 자료구조, 함수형, OOP, NumPy/Pandas 패턴 |
+| `04_nlp.md` | NLP 개념과 코드 | 토크나이저, 임베딩, Attention, 전처리 파이프라인 |
+| `05_llm.md` | LLM 개념과 코드 | Transformer 구조, 파인튜닝, RAG, 프롬프트 엔지니어링 |
+| `06_agent.md` | 에이전트 개념과 코드 | ReAct, Tool Use, 메모리, 멀티에이전트 오케스트레이션 |
 
 ---
 
@@ -34,12 +34,12 @@
 
 ```
 [로컬 파일 시스템]
-  ├── prob_stats.md
-  ├── linear_algebra.md
-  ├── python_syntax.md
-  ├── nlp.md
-  ├── llm.md
-  ├── agent.md
+  ├── 01_prob_stats.md
+  ├── 02_linear_algebra.md
+  ├── 03_python_syntax.md
+  ├── 04_nlp.md
+  ├── 05_llm.md
+  ├── 06_agent.md
   ├── progress.json        ← 학습 진도 및 오답 기록
   └── session_log.md       ← 세션별 대화 로그
 
@@ -131,7 +131,7 @@
    > claude
 
 2. 학습 루프 시작
-   > /loop AI 학습 시스템 — prob_stats.md부터 시작
+   > /loop AI 학습 시스템 — 01_prob_stats.md부터 시작
 
 3. Claude Code가 루프 진입:
    - progress.json 읽기
@@ -157,7 +157,7 @@
 
 | 단계 | 작업 | 산출물 |
 |---|---|---|
-| M1 | 6개 MD 학습 파일 초안 작성 | `prob_stats.md` 외 5개 |
+| M1 | 6개 MD 학습 파일 초안 작성 | `01_prob_stats.md` 외 5개 |
 | M2 | `progress.json` 스키마 및 초기화 스크립트 | `init_progress.py` |
 | M3 | Claude Code `/loop` 기반 학습 루프 프롬프트 설계 | `CLAUDE.md` 학습 지침 |
 | M4 | 모듈별 학습 루프 테스트 (각 1시간) | 테스트 로그 |

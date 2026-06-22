@@ -12,12 +12,12 @@ from pathlib import Path
 PROGRESS_FILE = Path(__file__).parent / "progress.json"
 
 MODULES = {
-    "prob_stats":     {"name": "확률통계",   "file": "prob_stats.md"},
-    "linear_algebra": {"name": "선형대수",   "file": "linear_algebra.md"},
-    "python_syntax":  {"name": "파이썬 문법", "file": "python_syntax.md"},
-    "nlp":            {"name": "NLP",         "file": "nlp.md"},
-    "llm":            {"name": "LLM",         "file": "llm.md"},
-    "agent":          {"name": "에이전트",    "file": "agent.md"},
+    "prob_stats":     {"name": "확률통계",   "file": "01_prob_stats.md"},
+    "linear_algebra": {"name": "선형대수",   "file": "02_linear_algebra.md"},
+    "python_syntax":  {"name": "파이썬 문법", "file": "03_python_syntax.md"},
+    "nlp":            {"name": "NLP",         "file": "04_nlp.md"},
+    "llm":            {"name": "LLM",         "file": "05_llm.md"},
+    "agent":          {"name": "에이전트",    "file": "06_agent.md"},
 }
 
 DEFAULT_PROGRESS = {

@@ -25,12 +25,12 @@ AgentStudy/
 
 | 파일 | 모듈 | 핵심 주제 |
 |------|------|----------|
-| `01.basic_study/prob_stats.md` | 확률통계 | 확률분포, 베이즈 정리, MLE, 정보이론 |
-| `01.basic_study/linear_algebra.md` | 선형대수 | 벡터/행렬, 고유값, SVD, PCA |
-| `01.basic_study/python_syntax.md` | 파이썬 문법 | 자료구조, 함수형, OOP, NumPy/Pandas |
-| `01.basic_study/nlp.md` | NLP | 토크나이저, 임베딩, Attention |
-| `01.basic_study/llm.md` | LLM | Transformer, 파인튜닝, RAG, 프롬프트 |
-| `01.basic_study/agent.md` | 에이전트 | ReAct, Tool Use, 메모리, 멀티에이전트 |
+| `01.basic_study/01_prob_stats.md` | 확률통계 | 확률분포, 베이즈 정리, MLE, 정보이론 |
+| `01.basic_study/02_linear_algebra.md` | 선형대수 | 벡터/행렬, 고유값, SVD, PCA |
+| `01.basic_study/03_python_syntax.md` | 파이썬 문법 | 자료구조, 함수형, OOP, NumPy/Pandas |
+| `01.basic_study/04_nlp.md` | NLP | 토크나이저, 임베딩, Attention |
+| `01.basic_study/05_llm.md` | LLM | Transformer, 파인튜닝, RAG, 프롬프트 |
+| `01.basic_study/06_agent.md` | 에이전트 | ReAct, Tool Use, 메모리, 멀티에이전트 |
 
 ## 참조 자료
 
@@ -62,7 +62,7 @@ python -X utf8 01.basic_study/init_progress.py status
 
 ### 3단계: 개념 설명
 `01.basic_study/` 내 해당 모듈 MD 파일을 읽고 선정된 토픽 섹션을 대화체로 설명한다.
-에이전트 모듈(`01.basic_study/agent.md`) 학습 시 `03.SOTA/ai_agent_trends_2026_05.md`를 함께 참조한다.
+에이전트 모듈(`01.basic_study/06_agent.md`) 학습 시 `03.SOTA/ai_agent_trends_2026_05.md`를 함께 참조한다.
 - 3~5줄 핵심 요약
 - 직관적 비유 1개
 - 코드 예시 1개 (간단한 것)

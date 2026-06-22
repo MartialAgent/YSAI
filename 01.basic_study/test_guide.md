@@ -72,7 +72,7 @@ python -X utf8 init_progress.py set agent
 
 ```bash
 # Claude Code 터미널에서
-/loop prob_stats.md부터 확률통계 학습 시작
+/loop 01_prob_stats.md부터 확률통계 학습 시작
 
 # 또는 특정 모듈 지정
 /loop linear_algebra 모듈 학습 — progress.json에서 이어서 시작
