@@ -24,8 +24,8 @@ python -X utf8 01.basic_study/init_progress.py start
 
 ### 4. 학습 진행
 CLAUDE.md의 세션 프로토콜(3~7단계)에 따라 진행:
-- 개념 설명: `01.basic_study/{module}.md` 해당 섹션 읽어서 대화체로 설명
-- 에이전트 모듈이면 `03.SOTA/ai_agent_trends_2026_05.md` 함께 참조
+- 개념 설명: `01.basic_study/0X_{module}.md` 해당 섹션 읽어서 대화체로 설명
+- 에이전트 모듈이면 `03.agent-SOTA/ai_agent_trends_2026_05.md` 함께 참조
 - 문제 출제 → 평가 → 진도 기록 반복
 
 ### 행동 규칙
