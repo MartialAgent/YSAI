@@ -1,7 +1,0 @@
-openai>=1.14.0
-pydantic>=2.6.4
-python-dotenv>=1.0.1
-numpy>=1.26.4
-anthropic>=0.94.0
-google-generativeai>=0.8.6
-google-genai>=1.72.0
