@@ -32,14 +32,13 @@
 AgentStudy/
 ├── 00.memo/                  — 일자별 학습 메모 (/memo 로 누적)
 ├── 01.basic_study/           — 핵심 학습 모듈 6개 + 진도 관리 시스템
+│   └── 00_ai_agent_trends_2026_05.md — 2026 최신 트렌드 (Exa+Context7 검증판)
 ├── 02.codebase/              — 실습 코드베이스 (강의/오픈소스 레퍼런스)
 │   ├── 01.python/            — 패스트캠퍼스 파이썬/데이터분석 (11개 Part)
 │   ├── 02.agent-park/        — 패스트캠퍼스 AI Agent (공원나연, LangGraph Part 1~3)
 │   ├── 03.RAG-park/          — 패스트캠퍼스 GraphRAG (공원나연, Neo4j 기반)
 │   └── 04.modern-agent/      — (예약, 비어 있음)
-├── 03.agent-SOTA/            — 2026 최신 트렌드 (Exa+Context7 검증판)
-├── 04.agent-10papers/        — (예약, 향후 top10 논문 코드/요약)
-├── 05.seminar_project/       — AgentDAG 연구 자료 (논문/실험/PRD)
+├── 04.seminar_project/       — AgentDAG 연구 자료 (논문/실험/PRD)
 ├── .claude/commands/         — study, loop, memo, finish 스킬 정의
 └── CLAUDE.md                 — (이 파일) 학습 시스템 단일 지침
 ```
@@ -64,25 +63,24 @@ AgentStudy/
 2. **파이썬 문법**: 코딩 도구 다지기 (스니펫 동작 예측 + 실행)
 3. **NLP**: HuggingFace/NLTK 실습으로 토크나이저·임베딩 체화
 4. **LLM**: Transformer 아키텍처 + Anthropic API 실습
-5. **에이전트**: ReAct → Tool Use → 멀티에이전트 (`03.agent-SOTA/` 함께 참조)
+5. **에이전트**: ReAct → Tool Use → 멀티에이전트 (`01.basic_study/00_ai_agent_trends_2026_05.md` 함께 참조)
 
 ---
 
-## 4. 참조 자료 (`02.~05.`)
+## 4. 참조 자료 (`02.~04.`)
 
 | 폴더 | 출처 | 용도 | 연동 모듈 |
 |------|------|------|----------|
 | `02.codebase/01.python/` | 패스트캠퍼스 | 데이터분석 실습 (pandas, 시각화, ML) | `03_python_syntax` |
 | `02.codebase/02.agent-park/` | 공원나연 fastcampus-aiagent | LangGraph 실습 코드 | `06_agent` |
 | `02.codebase/03.RAG-park/` | 공원나연 fastcampus-graphrag | GraphRAG/Neo4j 실습 | `05_llm`, `06_agent` |
-| `03.agent-SOTA/` | Exa + Context7 검증 | 2026 최신 트렌드 — 에이전트 학습 시 **필독** | `06_agent` |
-| `04.agent-10papers/` | (예약) | 향후 top10 논문 자리 | `05_llm`, `06_agent` |
-| `05.seminar_project/` | MartialAgent/AgentDAG | 자체 연구 자료 (실험·논문) | 심화/응용 |
+| `01.basic_study/00_ai_agent_trends_2026_05.md` | Exa + Context7 검증 | 2026 최신 트렌드 — 에이전트 학습 시 **필독** | `06_agent` |
+| `04.seminar_project/` | MartialAgent/AgentDAG | 자체 연구 자료 (실험·논문) | 심화/응용 |
 
 ### 모듈별 코드 참조 매핑
 - 에이전트 코딩 문제 출제 시 → `02.codebase/02.agent-park/` LangGraph 예제 참고
 - RAG/GraphRAG 학습 시 → `02.codebase/03.RAG-park/` 우선
-- 최신 트렌드 질문 시 → `03.agent-SOTA/ai_agent_trends_2026_05.md`
+- 최신 트렌드 질문 시 → `01.basic_study/00_ai_agent_trends_2026_05.md`
 
 ---
 
@@ -126,7 +124,7 @@ python -X utf8 01.basic_study/init_progress.py status
 
 ### 3단계: 개념 설명
 `01.basic_study/0X_*.md`의 해당 토픽 섹션을 읽고 대화체로 설명한다.
-에이전트 모듈(`06_agent.md`) 학습 시 `03.agent-SOTA/ai_agent_trends_2026_05.md`를 함께 참조한다.
+에이전트 모듈(`06_agent.md`) 학습 시 `01.basic_study/00_ai_agent_trends_2026_05.md`를 함께 참조한다.
 - 3~5줄 핵심 요약
 - 직관적 비유 1개
 - 코드 예시 1개 (간단한 것)
